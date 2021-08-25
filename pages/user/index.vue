@@ -50,7 +50,14 @@
           <li>
             <span>
               <em>冻结金额</em>
-              <i class="markicon"></i>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="被冻结的金额暂时将无法使用，敬请谅解！"
+                placement="top-start"
+              >
+                <i class="markicon"></i>
+              </el-tooltip>
             </span>
             <span class="truemoney">
               <i class="f26 fb">{{ userIndexVO.freezeAmount }}</i

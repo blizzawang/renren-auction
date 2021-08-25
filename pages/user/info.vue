@@ -87,6 +87,12 @@ export default {
       this.$axios
         .$post("/login/userInfo/updateUserInfo", this.userIndexVO)
         .then((response) => {
+          if (response.code === 200) {
+            this.$message({
+              message: "修改成功!",
+              type: "success",
+            });
+          }
           // 更新一下cookie中的用户信息
           cookie.set("userInfo", this.userIndexVO);
         });

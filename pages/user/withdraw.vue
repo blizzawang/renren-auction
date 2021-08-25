@@ -61,6 +61,38 @@
           >
           </el-alert>
         </div>
+        <div v-if="active === 3 && status === 2" class="deposit-form">
+          <el-alert
+            title="您的提现申请已通过"
+            type="success"
+            show-icon
+            :closable="false"
+          >
+          </el-alert>
+          <el-button
+            style="margin-top:20px;"
+            type="success"
+            @click="changeActive"
+          >
+            再次提现
+          </el-button>
+        </div>
+        <div v-if="active === 3 && status === -1" class="deposit-form">
+          <el-alert
+            title="您的提现申请被拒绝"
+            type="error"
+            show-icon
+            :closable="false"
+          >
+          </el-alert>
+          <el-button
+            style="margin-top:20px;"
+            type="success"
+            @click="changeActive"
+          >
+            再次提现
+          </el-button>
+        </div>
       </div>
       <div class="deposit-tip" style="height: 110px;line-height: 24px;">
         <b>温馨提示：</b><br />
@@ -79,8 +111,9 @@ export default {
   data() {
     return {
       fetchAmt: 0,
-      active: 1,
+      active: 0,
       userId: 0,
+      status: 0,
     };
   },
   mounted() {
@@ -88,22 +121,25 @@ export default {
   },
 
   methods: {
+    changeActive() {
+      this.active = 1;
+    },
     getWithdrawStatus() {
       this.getCookieUserId();
       this.$axios
         .$get("/login/withdraw/status/" + this.userId)
         .then((response) => {
-          let status = response.data.status;
-          if (status === 0) {
+          this.status = response.data.status;
+          if (this.status === 0) {
             // 未提交提现
             this.active = 1;
-          } else if (status === 1) {
+          } else if (this.status === 1) {
             // 提现审核中
             this.active = 2;
-          } else if (status === 2) {
+          } else if (this.status === 2) {
             // 提现审核通过
             this.active = 3;
-          } else if (status === -1) {
+          } else if (this.status === -1) {
             // 提现审核不通过
             this.active = 3;
           }
@@ -126,7 +162,7 @@ export default {
         type: "success",
       });
       // 将步骤设置为第二步
-      this.active = 1;
+      this.active = 2;
       this.$axios
         .$get(
           "/login/withdraw/auth/commitWithdraw/" +
