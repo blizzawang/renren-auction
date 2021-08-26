@@ -38,7 +38,9 @@
                 <em id="txfy" class="markicon fl"></em>
               </el-tooltip>
               <span class="deposit-formright deposit-formright1">
-                <i> <label id="form:fee"> 0.00</label> </i>元
+                <i>
+                  <label id="form:fee"> {{ withDrawConst }}</label> </i
+                >元
               </span>
             </li>
             <li>
@@ -118,6 +120,14 @@ export default {
   },
   mounted() {
     this.getWithdrawStatus();
+  },
+  computed: {
+    // 计算提现费用
+    withDrawConst() {
+      // 收取0.1%手续费
+      let withConst = this.fetchAmt * 0.001;
+      return withConst.toFixed(2); // 保留两位小数
+    },
   },
 
   methods: {

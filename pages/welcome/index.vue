@@ -82,7 +82,7 @@
           <div class="swiper-wrapper">
             <div class="swiper-slide">
               <ul>
-                <li>
+                <li @click="toShopInfo()">
                   <img
                     src="~assets/images/section_second_list_img1.jpg"
                     alt=""
@@ -226,6 +226,11 @@ export default {
         require("~/assets/images/notable5.jpg"),
       ],
     };
+  },
+  methods: {
+    toShopInfo() {
+      alert(1);
+    },
   },
 };
 </script>

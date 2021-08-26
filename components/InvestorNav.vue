@@ -35,6 +35,13 @@
         </NuxtLink>
       </span>
     </li>
+    <li :class="{ 'pleft-cur': $route.fullPath === '/user/add' }">
+      <span>
+        <NuxtLink style="text-align:center;width:115px;" to="/user/add">
+          <i class="el-icon-place dot1"></i>添加拍品
+        </NuxtLink>
+      </span>
+    </li>
     <li :class="{ 'pleft-cur': $route.fullPath === '/user/recharge' }">
       <span
         ><NuxtLink to="/user/recharge"
