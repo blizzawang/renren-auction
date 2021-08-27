@@ -1618,7 +1618,8 @@ header .header_main .header_banner1_div p {
   width: 1190px;
   height: 55px;
   padding: 0 30px;
-  background: url("~assets/images/section_second_header_background.png") no-repeat;
+  background: url("~assets/images/section_second_header_background.png")
+    no-repeat;
   position: relative;
   margin-top: 20px;
 }
@@ -1759,7 +1760,8 @@ header .header_main .header_banner1_div p {
   background: rgba(0, 0, 0, 0.1) !important;
 }
 .section_second .section_second_list .swiper_section_second_list_left {
-  width: 1000px;
+  /*一行的宽度为1200px，其中一个商品的宽度为200px，所以可放置6个商品 */
+  width: 1200px;  
   float: left;
   height: 225px;
 }
