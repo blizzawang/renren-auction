@@ -35,10 +35,30 @@
         </NuxtLink>
       </span>
     </li>
+    <li
+      :class="{ 'pleft-cur': $route.fullPath === '/user/auctionDetail' }"
+      style="display:none"
+    >
+      <span>
+        <NuxtLink
+          style="text-align:center;width:115px;"
+          to="/user/auctionDetail"
+        >
+          <i class="el-icon-place dot1"></i>拍品详情
+        </NuxtLink>
+      </span>
+    </li>
     <li :class="{ 'pleft-cur': $route.fullPath === '/user/add' }">
       <span>
         <NuxtLink style="text-align:center;width:115px;" to="/user/add">
           <i class="el-icon-place dot1"></i>添加拍品
+        </NuxtLink>
+      </span>
+    </li>
+    <li :class="{ 'pleft-cur': $route.fullPath === '/user/auctionList' }">
+      <span>
+        <NuxtLink style="text-align:center;width:115px;" to="/user/auctionList">
+          <i class="el-icon-place dot1"></i>拍卖列表
         </NuxtLink>
       </span>
     </li>

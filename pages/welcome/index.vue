@@ -63,13 +63,13 @@
         <p class="section_second_header_img"></p>
         <div class="section_second_header_left">
           <p></p>
-          <span class="">即将开拍</span>
+          <span class="">正在拍卖</span>
           <span>期待已久的好货！</span>
           <span> </span>
         </div>
         <div class="section_second_header_right">
           <p>当前场次</p>
-          <span class="section_second_header_right_hours">00</span>
+          <span class="section_second_header_right_hours">02</span>
           <span class="section_second_header_right_mao">：</span>
           <span class="section_second_header_right_minutes">00</span>
           <span class="section_second_header_right_mao">：</span>
