@@ -62,6 +62,13 @@
         </NuxtLink>
       </span>
     </li>
+    <li :class="{ 'pleft-cur': $route.fullPath === '/user/offer' }">
+      <span>
+        <NuxtLink style="text-align:center;width:115px;" to="/user/offer">
+          <i class="el-icon-place dot1"></i>出价记录
+        </NuxtLink>
+      </span>
+    </li>
     <li :class="{ 'pleft-cur': $route.fullPath === '/user/recharge' }">
       <span
         ><NuxtLink to="/user/recharge"
