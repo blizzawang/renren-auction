@@ -9,6 +9,26 @@
       :configs="configs"
     ></img-zoom>
     <div style="border:1px red solid;width:45%;float:right;margin-right:210px">
+      <div
+        v-if="this.shopInfo.status === -1"
+        style="width:220px;height:70px;border:4px #980000 solid;float:left;
+          text-align:center;line-height:70px;color:#980000;font-size:30px;
+          margin-top:12%;margin-left:12%;position:absolute;
+          transform: rotate(13deg);-o-transform:rotate(13deg);    
+          -webkit-transform:rotate(13deg);-moz-transform:rotate(13deg);"
+      >
+        已撤拍
+      </div>
+      <div
+        v-if="this.shopInfo.status === 2"
+        style="width:220px;height:70px;border:4px #980000 solid;float:left;
+          text-align:center;line-height:70px;color:#980000;font-size:30px;
+          margin-top:12%;margin-left:12%;position:absolute;
+          transform: rotate(13deg);-o-transform:rotate(13deg);    
+          -webkit-transform:rotate(13deg);-moz-transform:rotate(13deg);"
+      >
+        已成交
+      </div>
       <p
         style="font-weight:1000;padding-top:10px;line-height:28px;margin-bottom:5px"
       >
@@ -118,6 +138,87 @@ export default {
     this.getFirstPriceUser();
   },
   methods: {
+    // 定时器，倒计时拍卖时间
+    startTimer() {
+      let myVue = this; // 得到Vue实例
+      if (
+        this.shopInfo.day >= 0 &&
+        this.shopInfo.hour >= 0 &&
+        this.shopInfo.minute >= 0 &&
+        this.shopInfo.second >= 0
+      ) {
+        let timer = setInterval(function() {
+          // 当天、时、分、秒均为0时，停止定时器（为了防止越界，判断是否等于1即可）
+          if (
+            myVue.shopInfo.day === 1 &&
+            myVue.shopInfo.hour === 1 &&
+            myVue.shopInfo.minute === 1 &&
+            myVue.shopInfo.second === 1
+          ) {
+            clearInterval(timer);
+          }
+
+          // 当秒数减到0时，就让分钟减1
+          if (myVue.shopInfo.second === 0) {
+            // 若分钟不为0，则让分钟减1，并重置秒数
+            if (myVue.shopInfo.minute !== 0) {
+              myVue.shopInfo.minute = myVue.shopInfo.minute - 1;
+              // 重置秒数
+              myVue.shopInfo.second = 60;
+            } else {
+              // 若分钟为0，则查看小时和天数是否为0
+              if (myVue.shopInfo.hour === 0 && myVue.shopInfo.day === 0) {
+                // 若为0，则拍品时间结束
+                // clearInterval(timer);
+              } else {
+                // 只要其中一个不为0，则重置秒数
+                myVue.shopInfo.second = 60;
+              }
+            }
+          }
+          // 当分钟减到0时，就让小时减1
+          if (myVue.shopInfo.minute === 0) {
+            // 若小时不为0，则让小时减1，并重置分钟
+            if (myVue.shopInfo.hour !== 0) {
+              myVue.shopInfo.hour = myVue.shopInfo.hour - 1;
+              // 重置分钟
+              myVue.shopInfo.minute = 60;
+            } else {
+              // 若小时为0，则查看天数是否为0
+              if (myVue.shopInfo.day === 0) {
+                // 若为0，则拍品时间结束
+                // clearInterval(timer);
+              } else {
+                // 若不为0，则重置分钟
+                myVue.shopInfo.minute = 60;
+              }
+            }
+          }
+          // 当小时减到0时，就让天数减1
+          if (myVue.shopInfo.hour === 0) {
+            // 若天数不为0，则让天数减1，并重置小时
+            if (myVue.shopInfo.day !== 0) {
+              myVue.shopInfo.day = myVue.shopInfo.day - 1;
+              // 重置小时
+              myVue.shopInfo.hour = 24;
+            } else {
+              // 若天数为0，则拍品时间结束
+              // clearInterval(timer);
+            }
+          }
+          // 每隔一秒，就让当前秒数减1
+          myVue.shopInfo.second = myVue.shopInfo.second - 1;
+        }, 1000);
+      } else {
+        // 若有负数，则说明拍品已经结束拍卖，将所有时间置为0
+        myVue.shopInfo.day = 0;
+        myVue.shopInfo.hour = 0;
+        myVue.shopInfo.minute = 0;
+        myVue.shopInfo.second = 0;
+        // 提示用户当前拍品已结束拍卖
+        console.log("当前拍品已结束拍卖...");
+      }
+    },
     // 获取Cookie中当前用户的id
     getCookieUserId() {
       // 判断当前Cookie中是否包含用户信息
@@ -144,6 +245,8 @@ export default {
         this.shopInfo = response.data.shopInfo;
         // 设置初始竞价
         this.offerPrice = this.shopInfo.shopCurrentPrice;
+        // 启动定时器，倒计时拍卖时间
+        this.startTimer();
       });
     },
     add() {
@@ -170,39 +273,58 @@ export default {
     },
     // 参与竞拍
     auction() {
-      this.getCookieUserId();
-      this.$confirm(
-        "参与竞拍需缴纳拍品保证金¥100.00（冻结账户金额¥100.00）！是否继续?",
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
+      if (this.shopInfo.status === 1) {
+        let myVue = this;
+        this.getCookieUserId();
+        this.$confirm(
+          "参与竞拍需缴纳拍品保证金¥100.00（冻结账户金额¥100.00）！是否继续?",
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }
+        )
+          .then(() => {
+            // 若商品状态为拍卖中
+            if (myVue.shopInfo.status === 1) {
+              this.$message({
+                type: "success",
+                message: "出价成功",
+              });
+              // 封装数据
+              this.offerRecord.shopId = this.shopId;
+              this.offerRecord.offerPrice = this.offerPrice;
+              this.offerRecord.userId = this.userId;
+              this.offerRecord.earnestPrice = this.shopInfo.earnestMoney;
+              console.log(this.offerRecord);
+              // 发送请求进行出价
+              this.$axios
+                .$post("/login/offerRecord/offer", this.offerRecord)
+                .then((response) => {});
+            } else if (myVue.shopInfo.status === 2) {
+              console.log("该商品已成交");
+            } else if (myVue.shopInfo.status === -1) {
+              console.log("该商品已撤拍");
+            }
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "取消出价",
+            });
+          });
+      } else if (this.shopInfo.status === 2) {
+        this.$message({
+          message: "该商品已成交",
           type: "warning",
-        }
-      )
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "出价成功",
-          });
-
-          // 封装数据
-          this.offerRecord.shopId = this.shopId;
-          this.offerRecord.offerPrice = this.offerPrice;
-          this.offerRecord.userId = this.userId;
-          this.offerRecord.earnestPrice = this.shopInfo.earnestMoney;
-          console.log(this.offerRecord);
-          // 发送请求进行出价
-          this.$axios
-            .$post("/login/offerRecord/offer", this.offerRecord)
-            .then((response) => {});
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "取消出价",
-          });
         });
+      } else if (this.shopInfo.status === -1) {
+        this.$message({
+          message: "该商品已撤拍",
+          type: "warning",
+        });
+      }
     },
   },
 };

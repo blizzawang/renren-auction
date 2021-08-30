@@ -27,12 +27,23 @@
         <template slot-scope="scope">
           <el-tag
             v-if="scope.row.commitStatus === 1"
+            type="warning"
+            size="mini"
+          >
+            交易中
+          </el-tag>
+          <el-tag
+            v-if="scope.row.commitStatus === 2"
             type="success"
             size="mini"
           >
             成功
           </el-tag>
-          <el-tag v-if="scope.row.commitStatus === 2" type="danger" size="mini">
+          <el-tag
+            v-if="scope.row.commitStatus === -1"
+            type="danger"
+            size="mini"
+          >
             失败
           </el-tag>
         </template>
@@ -44,6 +55,13 @@
             size="mini"
             @click="toOfferDetailRecord(scope.row.id)"
             >查看详情</el-button
+          >
+          <el-button
+            v-if="scope.row.commitStatus === 2"
+            type="warning"
+            size="mini"
+            @click="toSettlement(scope.row.id)"
+            >去结算</el-button
           >
         </template>
       </el-table-column>
@@ -81,6 +99,15 @@ export default {
     this.fetchData();
   },
   methods: {
+    // 点击去结算按钮，跳转至结算页面进行结算
+    toSettlement(id) {
+      this.$router.push({
+        path: "/user/shopSettlement",
+        query: {
+          id: id,
+        },
+      });
+    },
     // 点击查看详情按钮，跳转至指定商品的出价记录表
     toOfferDetailRecord(shopId) {
       this.$router.push({
