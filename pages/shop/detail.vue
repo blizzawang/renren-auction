@@ -273,57 +273,70 @@ export default {
     },
     // 参与竞拍
     auction() {
-      if (this.shopInfo.status === 1) {
-        let myVue = this;
-        this.getCookieUserId();
-        this.$confirm(
-          "参与竞拍需缴纳拍品保证金¥100.00（冻结账户金额¥100.00）！是否继续?",
-          "提示",
-          {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
-          }
-        )
-          .then(() => {
-            // 若商品状态为拍卖中
-            if (myVue.shopInfo.status === 1) {
-              this.$message({
-                type: "success",
-                message: "出价成功",
-              });
-              // 封装数据
-              this.offerRecord.shopId = this.shopId;
-              this.offerRecord.offerPrice = this.offerPrice;
-              this.offerRecord.userId = this.userId;
-              this.offerRecord.earnestPrice = this.shopInfo.earnestMoney;
-              console.log(this.offerRecord);
-              // 发送请求进行出价
-              this.$axios
-                .$post("/login/offerRecord/offer", this.offerRecord)
-                .then((response) => {});
-            } else if (myVue.shopInfo.status === 2) {
-              console.log("该商品已成交");
-            } else if (myVue.shopInfo.status === -1) {
-              console.log("该商品已撤拍");
+      // 若当前商品的拍卖时间均为0，则说明拍卖已经结束
+      if (
+        this.shopInfo.day === 0 &&
+        this.shopInfo.hour === 0 &&
+        this.shopInfo.minute === 0 &&
+        this.shopInfo.second === 0
+      ) {
+        this.$message({
+          type: "warning",
+          message: "当前拍品已经结束拍卖",
+        });
+      } else {
+        if (this.shopInfo.status === 1) {
+          let myVue = this;
+          this.getCookieUserId();
+          this.$confirm(
+            "参与竞拍需缴纳拍品保证金¥100.00（冻结账户金额¥100.00）！是否继续?",
+            "提示",
+            {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning",
             }
-          })
-          .catch(() => {
-            this.$message({
-              type: "info",
-              message: "取消出价",
+          )
+            .then(() => {
+              // 若商品状态为拍卖中
+              if (myVue.shopInfo.status === 1) {
+                this.$message({
+                  type: "success",
+                  message: "出价成功",
+                });
+                // 封装数据
+                this.offerRecord.shopId = this.shopId;
+                this.offerRecord.offerPrice = this.offerPrice;
+                this.offerRecord.userId = this.userId;
+                this.offerRecord.earnestPrice = this.shopInfo.earnestMoney;
+                console.log(this.offerRecord);
+                // 发送请求进行出价
+                this.$axios
+                  .$post("/login/offerRecord/offer", this.offerRecord)
+                  .then((response) => {});
+              } else if (myVue.shopInfo.status === 2) {
+                console.log("该商品已成交");
+              } else if (myVue.shopInfo.status === -1) {
+                console.log("该商品已撤拍");
+              }
+            })
+            .catch(() => {
+              this.$message({
+                type: "info",
+                message: "取消出价",
+              });
             });
+        } else if (this.shopInfo.status === 2) {
+          this.$message({
+            message: "该商品已成交",
+            type: "warning",
           });
-      } else if (this.shopInfo.status === 2) {
-        this.$message({
-          message: "该商品已成交",
-          type: "warning",
-        });
-      } else if (this.shopInfo.status === -1) {
-        this.$message({
-          message: "该商品已撤拍",
-          type: "warning",
-        });
+        } else if (this.shopInfo.status === -1) {
+          this.$message({
+            message: "该商品已撤拍",
+            type: "warning",
+          });
+        }
       }
     },
   },

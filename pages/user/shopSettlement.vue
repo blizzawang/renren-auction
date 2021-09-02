@@ -190,6 +190,7 @@
         </div>
         <button
           style="background-color:#E2383B;float:right;margin-right:100px;width:100px;height:40px;font-size:20px;padding:5px;border-radius:5px;color:white;text-align:center;border:none;"
+          @click="toPay()"
         >
           提交订单
         </button>
@@ -212,6 +213,15 @@ export default {
     this.getShopSettlement();
   },
   methods: {
+    // 点击提交订单按钮，跳转至待支付页面
+    toPay() {
+      this.$router.push({
+        path: "/user/waitPay",
+        query: {
+          order: this.order,
+        },
+      });
+    },
     getShopSettlement() {
       this.$axios.get(`/order/get/${this.$route.query.id}`).then((response) => {
         this.order = response.data.data.order;

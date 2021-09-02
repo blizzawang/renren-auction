@@ -95,10 +95,22 @@ export default {
     };
   },
   mounted() {
+    // 防止样式出现问题，刷新一下页面
+    this.refreshPage();
     // 获取出价记录数据
     this.fetchData();
   },
   methods: {
+    // 仅刷新一次当前页面
+    refreshPage() {
+      var url = location.href; //把当前页面的地址赋给变量 url
+      var times = url.split("?"); //分切变量 url 分隔符号为 "?"
+      if (times[1] != 1) {
+        //如果?后的值不等于1表示没有刷新
+        url += "?1"; //把变量 url 的值加入 ?1
+        self.location.replace(url); //刷新页面
+      }
+    },
     // 点击去结算按钮，跳转至结算页面进行结算
     toSettlement(id) {
       this.$router.push({

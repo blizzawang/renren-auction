@@ -21,9 +21,9 @@
         </NuxtLink>
       </span>
     </li>
-    <li :class="{ 'pleft-cur': $route.fullPath === '/user/invest' }">
+    <li :class="{ 'pleft-cur': $route.fullPath === '/user/buyRecord' }">
       <span>
-        <NuxtLink style="text-align:center;width:115px;" to="/user/invest">
+        <NuxtLink style="text-align:center;width:115px;" to="/user/buyRecord">
           <i class="el-icon-shopping-cart-2 dot1"></i>购买记录
         </NuxtLink>
       </span>
